@@ -25,6 +25,7 @@ class CommentAdmin(admin.ModelAdmin):
         'created',
     )
 
+
 class FollowAdmin(admin.ModelAdmin):
     list_display = (
         'user',

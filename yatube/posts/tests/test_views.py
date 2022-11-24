@@ -155,10 +155,11 @@ class PostsURLTests(TestCase):
         follow_count = Follow.objects.filter(user=self.user2).count()
         Follow.objects.get_or_create(author=self.user, user=self.user2)
         follow_count2 = Follow.objects.filter(user=self.user2).count()
-        self.assertEqual(follow_count+1, follow_count2, "Нет подписки")
+        self.assertEqual(follow_count + 1, follow_count2, "Нет подписки")
         Follow.objects.filter(author=self.user, user=self.user2).delete()
         follow_count3 = Follow.objects.filter(user=self.user2).count()
-        self.assertEqual(follow_count3, follow_count2-1, "Отписка не удалась")
+        self.assertEqual(follow_count3, follow_count2
+                         - 1, "Отписка не удалась")
 
     def test_following_post_added_correctly(self):
         response = self.authorized_client2.get(reverse('posts:follow_index'))
@@ -170,10 +171,12 @@ class PostsURLTests(TestCase):
             text='Тестовый пост для подписчика',
             author=self.user,
         )
-        response_follower = self.authorized_client2.get(reverse('posts:follow_index'))
+        response_follower = self.authorized_client2.get(
+            reverse('posts:follow_index'))
         follower_posts = response_follower.content
         self.assertNotEqual(follower_posts, posts, 'Подписчик не видит посты')
-        response_notfollower = self.authorized_client3.get(reverse('posts:follow_index'))
+        response_notfollower = self.authorized_client3.get(
+            reverse('posts:follow_index'))
         notfollower_posts = response_notfollower.content
         self.assertEqual(notfollower_posts, posts2, 'Не подписчик видит посты')
 

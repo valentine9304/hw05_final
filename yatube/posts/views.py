@@ -166,6 +166,7 @@ def profile_unfollow(request, username):
         return redirect('posts:profile', username=username)
     return redirect('posts:profile', username=username)
 
+
 def page_not_found(request, exception):
     return render(request, 'core/404.html', {'path': request.path}, status=404)
 
