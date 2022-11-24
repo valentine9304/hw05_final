@@ -1,0 +1,101 @@
+{% load static %}
+{% load user_filters %}
+{% with request.resolver_match.view_name as view_name %}
+  <header>
+    <nav class="navbar navbar-light" style="background-color: lightskyblue">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'posts:index' %}">
+          <img src="{% static 'img/yatube.png' %}"
+               height="50"
+               class="d-inline-block align-top"
+               alt="">
+          {% comment %} <span style="color:red">Ya</span>tube {% endcomment %}
+        </a>
+ 
+        <ul class="nav nav-pills">
+          <li class="nav-item">
+            <a href="{% url 'about:author' %}"
+               class="btn btn-outline-primary m-1 {% if view_name  == 'about:author' %}active{% endif %}">Об авторе</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'about:tech' %}"
+               class="btn btn-outline-primary m-1 {% if view_name  == 'about:tech' %}active{% endif %}">Технологии</a>
+          </li>
+          {% if request.user.is_authenticated %}
+            <li class="nav-item">
+              <a href="{% url 'posts:post_create' %}"
+                 class="btn btn-outline-primary m-1">Новая запись</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'users:password_reset' %}"
+                 class="btn btn-outline-primary m-1">Изменить пароль</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'users:logout' %}" class="btn btn-danger m-1">Выйти</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link link-light">Пользователь: {{ user.username }}</a>
+            </li>
+          {% else %}
+            <div class="btn-toolbar">
+              <a href="{% url 'users:login' %}" class="btn btn-primary m-1">Войти
+              </button>
+              {% comment %} <a href="{% url 'users:login' %}" class="btn btn-primary m-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Войти
+              </a> {% endcomment %}
+              <a href="{% url 'users:signup' %}" class="btn btn-success m-1">Регистрация</a>
+            </div>
+          </li>
+     
+          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Авторизация</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form method="post"
+                          {% if action_url %} action="{% url action_url %}" {% endif %}>
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="form-group row my-3"
+                                 {% if field.field.required %} aria-required="true" {% else %} aria-required="false" {% endif %}>
+                                <label for="{{ field.id_for_label }}">
+                                    {{ field.label }}
+                                    {% if field.field.required %}<span class="required text-danger">*</span>{% endif %}
+                                </label>
+                                <div>
+                                    {{ field|addclass:'form-control' }}
+                                    {% if field.help_text %}
+                                        <small id="{{ field.id_for_label }}-help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="col-md-6 offset-md-4">
+                            <button type="submit" class="btn btn-primary">Войти</button>
+                            <!-- Тест на внимательность. Без переопределения шаблона этого адреса
+            не существует. Нужно что-то делать, иначе все упадет -->
+                            {% comment %} <a href="{% url 'posts:index' %}" class="btn btn-link"> {% endcomment %}
+                            <a href="{% url 'users:password_reset' %}" class="btn btn-link">Забыли пароль?</a>
+                        </div>
+                    </form>
+                </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+        {% endif %}
+      </ul>
+      {# Конец добавленого в спринте #}
+    </div>
+  </nav>
+</header>
+{% endwith %}

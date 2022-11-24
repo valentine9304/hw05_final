@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html> <!-- Используется html 5 версии -->
+<html lang="ru">
+  <!-- Язык сайта - русский -->
+  <head>
+    <meta charset="utf-8">
+    <!-- Кодировка сайта -->
+    <!-- Сайт готов работать с мобильными устройствами -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Загружаем фав-иконки -->
+    <link rel="icon"
+          href="{% static 'img/fav/favicon.ico' %}"
+          sizes="16x16"
+          type="image/x-icon">
+    <link rel="apple-touch-icon"
+          sizes="180x180"
+          href="{% static 'img/fav/apple-touch-icon.png' %}">
+    <link rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="{% static 'img/fav/favicon-32x32.png' %}">
+    <link rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="{% static 'img/fav/favicon-16x16.png' %}">
+    <meta name="msapplication-TileColor" content="#000">
+    <meta name="theme-color" content="#ffffff">
+    <!-- Подключен файл со стандартными стилями бустрап -->
+    {% comment %} <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> {% endcomment %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <title>
+      {% block title %}
+        Без заголовка
+      {% endblock title %}
+    </title>
+  </head>
+  <body>
+    {% include 'includes/header.html' %}
+    <main>
+      {% block content %}
+        Контент не подвезли :(
+      {% endblock content %}
+    </main>
+    <!-- Использованы классы бустрапа: -->
+    <!-- border-top: создаёт тонкую линию сверху блока -->
+    <!-- text-center: выравнивает текстовые блоки внутри блока по центру -->
+    <!-- py-3: контент внутри размещается с отступом сверху и снизу -->
+    {% include 'includes/footer.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+  </body>
+</html>
