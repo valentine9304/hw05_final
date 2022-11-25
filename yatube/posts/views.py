@@ -20,7 +20,8 @@ def get_page_obj(post_list, request):
 @cache_page(20, key_prefix='index_page')
 def index(request):
     post_list = Post.objects.all()
-    return render(request, "posts/index.html", get_page_obj(post_list, request))
+    return render(request, "posts/index.html",
+                  get_page_obj(post_list, request))
 
 
 def group_posts(request, slug):
@@ -140,7 +141,8 @@ def post_delete(request, post_id=None):
 def follow_index(request):
     sub_authors_posts = Post.objects.filter(
         author__following__user=request.user)
-    return render(request, 'posts/follow.html', get_page_obj(sub_authors_posts, request))
+    return render(request, 'posts/follow.html',
+                  get_page_obj(sub_authors_posts, request))
 
 
 @login_required

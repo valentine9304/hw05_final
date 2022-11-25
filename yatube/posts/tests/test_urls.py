@@ -37,11 +37,15 @@ class PostsURLTests(TestCase):
     def test_guest_pages_exists(self):
         urls = {
             '': HTTPStatus.OK,
-            reverse('posts:group_list', kwargs={'slug': self.group.slug}): HTTPStatus.OK,
-            reverse('posts:profile', kwargs={'username': self.user}): HTTPStatus.OK,
-            reverse('posts:post_detail', kwargs={'post_id': self.group.pk}): HTTPStatus.OK,
+            reverse('posts:group_list',
+                    kwargs={'slug': self.group.slug}): HTTPStatus.OK,
+            reverse('posts:profile',
+                    kwargs={'username': self.user}): HTTPStatus.OK,
+            reverse('posts:post_detail',
+                    kwargs={'post_id': self.group.pk}): HTTPStatus.OK,
             '/create/': HTTPStatus.FOUND,
-            reverse('posts:post_edit', kwargs={'post_id': self.group.pk}): HTTPStatus.FOUND,
+            reverse('posts:post_edit',
+                    kwargs={'post_id': self.group.pk}): HTTPStatus.FOUND,
         }
 
         for url, status in urls.items():
@@ -70,9 +74,13 @@ class PostsURLTests(TestCase):
     def test_urls_uses_correct_template(self):
         templates_url_names = {
             'posts/index.html': '/',
-            'posts/group_list.html': reverse('posts:group_list', kwargs={'slug': self.group.slug}),
-            'posts/profile.html': reverse('posts:profile', kwargs={'username': self.user}),
-            'posts/post_detail.html': reverse('posts:post_detail', kwargs={'post_id': self.group.pk}),
+            'posts/group_list.html': reverse('posts:group_list',
+                                             kwargs={'slug': self.group.slug}),
+            'posts/profile.html': reverse('posts:profile',
+                                          kwargs={'username': self.user}),
+            'posts/post_detail.html': reverse('posts:post_detail',
+                                              kwargs={'post_id':
+                                                      self.group.pk}),
         }
         for template, address in templates_url_names.items():
             with self.subTest(address=address):
