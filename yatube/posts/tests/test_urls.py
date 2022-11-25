@@ -54,11 +54,13 @@ class PostsURLTests(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_author_page_exist(self):
-        response = self.authorized_client.get(reverse('posts:post_edit', kwargs={'post_id': self.group.pk}))
+        response = self.authorized_client.get(
+            reverse('posts:post_edit', kwargs={'post_id': self.group.pk}))
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_notauthor_page_exist(self):
-        response = self.authorized_notauthor.get(reverse('posts:post_edit', kwargs={'post_id': self.group.pk}))
+        response = self.authorized_notauthor.get(
+            reverse('posts:post_edit', kwargs={'post_id': self.group.pk}))
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
     def test_404page(self):
@@ -70,7 +72,7 @@ class PostsURLTests(TestCase):
             'posts/index.html': '/',
             'posts/group_list.html': reverse('posts:group_list', kwargs={'slug': self.group.slug}),
             'posts/profile.html': reverse('posts:profile', kwargs={'username': self.user}),
-            'posts/post_detail.html':  reverse('posts:post_detail', kwargs={'post_id': self.group.pk}),
+            'posts/post_detail.html': reverse('posts:post_detail', kwargs={'post_id': self.group.pk}),
         }
         for template, address in templates_url_names.items():
             with self.subTest(address=address):
@@ -78,7 +80,8 @@ class PostsURLTests(TestCase):
                 self.assertTemplateUsed(response, template)
 
     def test_edit_template(self):
-        response = self.authorized_client.get(reverse('posts:post_edit', kwargs={'post_id': self.group.pk}))
+        response = self.authorized_client.get(
+            reverse('posts:post_edit', kwargs={'post_id': self.group.pk}))
         self.assertTemplateUsed(response, 'posts/create_post.html')
 
     def test_create_template(self):

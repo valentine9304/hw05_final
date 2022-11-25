@@ -10,10 +10,12 @@ from .models import Group, Post, User, Follow
 POST_COUNT = 10
 POST_THIRTY = 30
 
+
 def get_page_obj(post_list, request):
     paginator = Paginator(post_list, POST_COUNT)
     page_number = request.GET.get('page')
-    return {'page_obj': paginator.get_page(page_number) }
+    return {'page_obj': paginator.get_page(page_number)}
+
 
 @cache_page(20, key_prefix='index_page')
 def index(request):

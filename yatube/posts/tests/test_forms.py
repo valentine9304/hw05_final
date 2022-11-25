@@ -78,23 +78,6 @@ class PostCreateFormTests(TestCase):
         self.assertEqual(latest.group.id, form_data['group'])
         self.assertEqual(latest.image, 'posts/small.gif')
 
-        pages: tuple = (
-            reverse('posts:index'),
-            reverse('posts:profile', kwargs={'username': 'UserAuthor'}),
-            reverse('posts:group_list', kwargs={'slug': 'dogs'}),
-        )
-
-        for adress in pages:
-            with self.subTest(adress=adress):
-                response_post = self.authorized_client.get(adress)
-                obj = response_post.context['page_obj'][0]
-                self.assertEqual(obj.image, 'posts/small.gif')
-
-        response = self.authorized_client.get(reverse('posts:post_detail',
-                                                      kwargs={'post_id': '2'}))
-        obj = response.context['post']
-        self.assertEqual(obj.image, 'posts/small.gif')
-
     def test_edit_form(self):
 
         form_data = {
