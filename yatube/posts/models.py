@@ -12,6 +12,10 @@ class Group(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
+
 
 class Post(models.Model):
     text = models.TextField()
@@ -39,6 +43,8 @@ class Post(models.Model):
         return self.text[:15]
 
     class Meta:
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
         ordering = ['-pub_date']
 
 
@@ -57,6 +63,8 @@ class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        verbose_name = 'Коммент'
+        verbose_name_plural = 'Комменты'
         ordering = ['-created']
 
     def __str__(self):
@@ -74,3 +82,16 @@ class Follow(models.Model):
         related_name='following',
         on_delete=models.CASCADE
     )
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name = 'Подписчик'
+        verbose_name_plural = 'Подписчики'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'author'),
+                name='user cant follow himself'
+            ),
+        ]

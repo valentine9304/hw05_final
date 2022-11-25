@@ -1,6 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.test import TestCase, Client
+from django.urls import reverse
+from http import HTTPStatus
+
 
 from posts.models import Group, Post
 
@@ -33,12 +36,12 @@ class PostsURLTests(TestCase):
 
     def test_guest_pages_exists(self):
         urls = {
-            '': 200,
-            '/group/dogs/': 200,
-            '/profile/UserAuthor/': 200,
-            '/posts/1/': 200,
-            '/create/': 302,
-            '/posts/1/edit/': 302,
+            '': HTTPStatus.OK,
+            reverse('posts:group_list', kwargs={'slug': self.group.slug}): HTTPStatus.OK,
+            reverse('posts:profile', kwargs={'username': self.user}): HTTPStatus.OK,
+            reverse('posts:post_detail', kwargs={'post_id': self.group.pk}): HTTPStatus.OK,
+            '/create/': HTTPStatus.FOUND,
+            reverse('posts:post_edit', kwargs={'post_id': self.group.pk}): HTTPStatus.FOUND,
         }
 
         for url, status in urls.items():
@@ -48,26 +51,26 @@ class PostsURLTests(TestCase):
 
     def test_login_page_exist(self):
         response = self.authorized_client.get('/create/')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_author_page_exist(self):
-        response = self.authorized_client.get('/posts/1/edit/')
-        self.assertEqual(response.status_code, 200)
+        response = self.authorized_client.get(reverse('posts:post_edit', kwargs={'post_id': self.group.pk}))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_notauthor_page_exist(self):
-        response = self.authorized_notauthor.get('/posts/1/edit/')
-        self.assertEqual(response.status_code, 302)
+        response = self.authorized_notauthor.get(reverse('posts:post_edit', kwargs={'post_id': self.group.pk}))
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
     def test_404page(self):
         response = self.guest_client.get('/page_not_exist/')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     def test_urls_uses_correct_template(self):
         templates_url_names = {
             'posts/index.html': '/',
-            'posts/group_list.html': '/group/dogs/',
-            'posts/profile.html': '/profile/UserAuthor/',
-            'posts/post_detail.html': '/posts/1/',
+            'posts/group_list.html': reverse('posts:group_list', kwargs={'slug': self.group.slug}),
+            'posts/profile.html': reverse('posts:profile', kwargs={'username': self.user}),
+            'posts/post_detail.html':  reverse('posts:post_detail', kwargs={'post_id': self.group.pk}),
         }
         for template, address in templates_url_names.items():
             with self.subTest(address=address):
@@ -75,7 +78,7 @@ class PostsURLTests(TestCase):
                 self.assertTemplateUsed(response, template)
 
     def test_edit_template(self):
-        response = self.authorized_client.get('/posts/1/edit/')
+        response = self.authorized_client.get(reverse('posts:post_edit', kwargs={'post_id': self.group.pk}))
         self.assertTemplateUsed(response, 'posts/create_post.html')
 
     def test_create_template(self):
@@ -85,5 +88,5 @@ class PostsURLTests(TestCase):
     def test_404_uses_correct_template(self):
         """Проверка шаблона для адреса error404."""
         response = self.guest_client.get("404")
-        self.assertTrue(response.status_code == 404)
+        self.assertTrue(response.status_code == HTTPStatus.NOT_FOUND)
         self.assertTemplateUsed(response, 'core/404.html')

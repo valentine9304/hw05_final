@@ -73,13 +73,6 @@ class PostCreateFormTests(TestCase):
         self.assertRedirects(response, reverse(
             'posts:profile', kwargs={'username': self.user}))
         self.assertEqual(Post.objects.count(), post_count + 1)
-        self.assertTrue(
-            Post.objects.filter(
-                text='Тестовый текст',
-                group=self.group,
-                image='posts/small.gif'
-            ).exists()
-        )
         latest = Post.objects.latest("id")
         self.assertEqual(latest.text, form_data['text'])
         self.assertEqual(latest.group.id, form_data['group'])

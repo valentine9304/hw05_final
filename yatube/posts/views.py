@@ -10,17 +10,15 @@ from .models import Group, Post, User, Follow
 POST_COUNT = 10
 POST_THIRTY = 30
 
+def get_page_obj(post_list, request):
+    paginator = Paginator(post_list, POST_COUNT)
+    page_number = request.GET.get('page')
+    return {'page_obj': paginator.get_page(page_number) }
 
 @cache_page(20, key_prefix='index_page')
 def index(request):
     post_list = Post.objects.all()
-    paginator = Paginator(post_list, POST_COUNT)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    context = {
-        'page_obj': page_obj,
-    }
-    return render(request, "posts/index.html", context)
+    return render(request, "posts/index.html", get_page_obj(post_list, request))
 
 
 def group_posts(request, slug):
@@ -140,13 +138,7 @@ def post_delete(request, post_id=None):
 def follow_index(request):
     sub_authors_posts = Post.objects.filter(
         author__following__user=request.user)
-    paginator = Paginator(sub_authors_posts, POST_COUNT)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    context = {
-        'page_obj': page_obj,
-    }
-    return render(request, 'posts/follow.html', context)
+    return render(request, 'posts/follow.html', get_page_obj(sub_authors_posts, request))
 
 
 @login_required
@@ -165,19 +157,3 @@ def profile_unfollow(request, username):
         Follow.objects.filter(author=author, user=request.user).delete()
         return redirect('posts:profile', username=username)
     return redirect('posts:profile', username=username)
-
-
-def page_not_found(request, exception):
-    return render(request, 'core/404.html', {'path': request.path}, status=404)
-
-
-def server_error(request):
-    return render(request, 'core/500.html', status=500)
-
-
-def permission_denied(request, exception):
-    return render(request, 'core/403.html', status=403)
-
-
-def csrf_failure(request, reason=''):
-    return render(request, 'core/403csrf.html')
